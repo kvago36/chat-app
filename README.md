@@ -56,4 +56,7 @@ For State managment
 UI components
 
 ## Relay ??
-In road map
+In roadmap
+
+## Socket.io
+In roadmap
