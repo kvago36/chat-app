@@ -2,6 +2,8 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import styled from 'styled-components'
 
+import Layout from 'layout/Layout'
+
 import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
 
@@ -9,7 +11,7 @@ export const Counter = observer(() => {
   const { counterStore, themeStore } = useStores()
 
   return (
-    <>
+    <Layout>
       <div>{counterStore.doubleCount}</div>
       <div>{themeStore.theme}</div>
       <Button onClick={() => themeStore.setTheme(Theme.light)}>
@@ -20,7 +22,7 @@ export const Counter = observer(() => {
       </Button>
       <Button onClick={() => counterStore.increment()}>++</Button>
       <Button onClick={() => counterStore.decrement()}>--</Button>
-    </>
+    </Layout>
   )
 })
 
