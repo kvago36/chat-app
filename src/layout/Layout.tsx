@@ -35,12 +35,22 @@ const Layout = ({ children }: Props) => {
             </Menu>
           </HeaderWrapper>
         </Header>
-        <Content>{children}</Content>
-        <Footer>Footer</Footer>
+        <Content>
+          <ContentWrapper>
+            {children}
+          </ContentWrapper>
+        </Content>
+        <Footer style={{ textAlign: 'center', padding: '12px 25px' }}>Footer</Footer>
       </AntLayout>
     </Wrapper>
   )
 }
+
+const ContentWrapper = styled.div`
+  background-color: #fff;
+  height: 100%;
+  padding: 25px;
+`
 
 const HeaderWrapper = styled.div`
   display: flex;

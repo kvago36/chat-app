@@ -25,6 +25,8 @@ function App() {
   const { userStore, themeStore } = useStores()
   const themeMode = themeStore.theme === 'light' ? lightTheme : darkTheme;
 
+  console.log(userStore.user)
+
   return (
     <IntlProvider locale="en" messages={messages}>
       <ThemeProvider theme={themeMode}>
@@ -45,7 +47,7 @@ function App() {
             </Route>
           </Switch>
           <Route exact path="/">
-            {userStore ? <Home /> : <Redirect to="/singIn" />}
+            {userStore.user ? <Home /> : <Redirect to="/login" />}
           </Route>
         </Router>
       </ThemeProvider>

@@ -1,5 +1,7 @@
 export const messages = {
   emailRequired: 'Please input your email!',
+  emailNotValid: 'E-mail is not valid!',
+  emailAlreadyTaken: 'This email is already taken!',
   passwordRequired: 'Please input your password!',
   passwordDidNotMatch: 'Passwords that you entered do not match!',
   comfirmPasswordRequired: 'Please confirm your password!',

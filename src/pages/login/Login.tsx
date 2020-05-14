@@ -4,11 +4,14 @@ import styled from 'styled-components'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { observer } from 'mobx-react'
 import { Form, Input, Button, Checkbox, message } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { useStores } from 'hooks/use-stores'
 
+import axios from 'axiosConfig'
+
 interface Login {
-  username: string,
+  email: string,
   password: string
 }
 
@@ -36,25 +39,21 @@ const Login = observer(() => {
     .loading(formatMessage({ id: 'loading' }))
 
     try {
-      const response = await fetch('api/users/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
+      const response = await axios.post('/users/signin', { email, password })
 
-      const { name, ...rest } = await response.json()
+      const { user, token, error } = await response.data
 
       message.destroy()
 
-      if (!name) {
+      if (error) {
         message.error(formatMessage({ id: 'singInError' }), 3);
         return;
       }
 
+      const { profile: { name, date, ...restProfile }, ...restUser } = user
+
       message.success(formatMessage({ id: 'singInSuccess' }, { name }), 2);
-      userStore.signIn({ name, ...rest })
+      userStore.signIn({ ...restUser, profile: { name, date: new Date(date), ...restProfile }, token })
       setTimeout(() => setAuthorization(true), 200)
     } catch (error) {
       // show error
@@ -86,9 +85,18 @@ const Login = observer(() => {
           label={formatMessage({id: 'email'})}
           style={{ textTransform: 'capitalize' }}
           name="email"
-          rules={[{ required: true, message: formatMessage({id: 'emailRequired'}) }]}
+          rules={[
+            { 
+              required: true,
+              message: formatMessage({id: 'emailRequired'})
+            },
+            {
+              type: 'email',
+              message: formatMessage({id: 'emailNotValid'}),
+            },
+          ]}
         >
-          <Input name="email" autoComplete="off" />
+          <Input name="email" prefix={<UserOutlined style={{ color: '#b5b5b5' }} />} placeholder="Username" autoComplete="off" />
         </Form.Item>
 
         <Form.Item
@@ -97,7 +105,7 @@ const Login = observer(() => {
           name="password"
           rules={[{ required: true, message: formatMessage({id: 'passwordRequired'}) }]}
         >
-          <Input.Password name="password" autoComplete="new-password" />
+          <Input.Password name="password" prefix={<LockOutlined style={{ color: '#b5b5b5' }} />} placeholder="Password" autoComplete="new-password" />
         </Form.Item>
 
         <Form.Item {...tailLayout} name="remember" valuePropName="checked">

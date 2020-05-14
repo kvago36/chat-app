@@ -7,16 +7,19 @@ import {
   Select,
   DatePicker,
   Checkbox,
-  Progress,
-  InputNumber,
-  message
+  message,
 } from 'antd';
-import styled from 'styled-components'
 import { FormattedMessage, useIntl } from 'react-intl'
 import CSS from 'csstype';
 import { observer } from 'mobx-react'
 
+import axios from 'axiosConfig'
+
 import { useStores } from 'hooks/use-stores'
+
+import Layout from 'layout/Layout'
+
+import { isEmail } from 'utils'
 
 const layout = {
   labelCol: { span: 8 },
@@ -33,20 +36,26 @@ const capitalizeText: CSS.Properties = {
 
 const Registration = observer(() => {
   const [isLoading, setLoading] = useState(false)
-  const [progress, setProgress] = useState(4)
+  const [timeoutId, setTimeoutId] = useState(0)
   const { formatMessage } = useIntl()
   const { userStore } = useStores()
 
   const onFinishFailed = () => {}
 
-  const requiredCount = 9
+  const validateEmail = async (email: string) => {
+    try {
+      const response = await axios.post('/users/email', { email })
+      const { error } = await response.data
 
-  const progressPersents = Math.round(progress / requiredCount * 100)
+      if (error) {
+        return
+      }
 
-  const onChange = (number: any) => setProgress(number)
-
-  console.log(progressPersents)
-
+      return email
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const onFinish = async (values: any) => {
     const { name, email, password, gender, date } = values
@@ -57,16 +66,14 @@ const Registration = observer(() => {
     .loading(formatMessage({ id: 'loading' }))
 
     try {
-
-      const response = await fetch('api/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, password, gender, date: date.unix() })
+      const response = await axios.post('/users/signup', {
+        name,
+        email,
+        password,
+        gender,
+        date: date.unix()
       })
-
-      const { user } = await response.json()
+      const { user } = await response.data
 
       message.destroy()
 
@@ -86,16 +93,12 @@ const Registration = observer(() => {
   }
 
   return (
-    <Wrapper>
+    <Layout>
       <Form
         {...layout}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        <InputNumber min={0} max={9} defaultValue={0} onChange={onChange} />
-        <ProgressWrapper>
-          <Progress showInfo={false} steps={requiredCount} percent={progressPersents} status="active" strokeColor="#1890ff" />
-        </ProgressWrapper>
         <Form.Item
           name="name"
           label={formatMessage({ id: 'name' })}
@@ -109,11 +112,33 @@ const Registration = observer(() => {
           label={formatMessage({ id: 'email' })}
           style={capitalizeText}
           rules={[
-            { required: true, message: formatMessage({id: 'emailRequired'}) },
-            {
-              type: 'email',
-              message: 'The input is not valid E-mail!',
-            }
+            { 
+              required: true,
+              message: formatMessage({id: 'emailRequired'})
+            },
+            ({ getFieldError }) => ({
+              validator(rule, value) {
+                return new Promise((resolve, reject) => {
+                  if (timeoutId) {
+                    clearTimeout(timeoutId)
+                  }
+
+                  setTimeoutId(setTimeout(async () => {
+                    if (!isEmail(value)) {
+                      return reject(formatMessage({ id: 'emailNotValid' }))
+                    }
+
+                    const canUseEmail = await validateEmail(value)
+
+                    if (canUseEmail) {
+                      resolve();
+                    } else {
+                      reject(formatMessage({ id: 'emailAlreadyTaken' }))
+                    }
+                  }, 200))
+                })
+              },
+            }),
           ]}
           hasFeedback
         >
@@ -198,6 +223,7 @@ const Registration = observer(() => {
           <DatePicker />
         </Form.Item>
         <Form.Item
+          {...tailLayout}
           name="agreement"
           valuePropName="checked"
           rules={[
@@ -214,20 +240,8 @@ const Registration = observer(() => {
           </Button>
         </Form.Item>
       </Form>
-    </Wrapper>
+    </Layout>
   );
 });
-
-const Wrapper = styled.div`
-  background: white;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ProgressWrapper = styled.div`
-  margin: 20px 0;
-`
 
 export default Registration
