@@ -20,6 +20,7 @@ import { useStores } from 'hooks/use-stores'
 import Layout from 'layout/Layout'
 
 import { isEmail } from 'utils'
+import { AuthStore } from 'stores/auth-store';
 
 const layout = {
   labelCol: { span: 8 },
@@ -38,7 +39,7 @@ const Registration = observer(() => {
   const [isLoading, setLoading] = useState(false)
   const [timeoutId, setTimeoutId] = useState(0)
   const { formatMessage } = useIntl()
-  const { userStore } = useStores()
+  const { userStore, authStore } = useStores()
 
   const onFinishFailed = () => {}
 
@@ -73,7 +74,7 @@ const Registration = observer(() => {
         gender,
         date: date.unix()
       })
-      const { user } = await response.data
+      const { user, token } = await response.data
 
       message.destroy()
 
@@ -83,7 +84,8 @@ const Registration = observer(() => {
       }
 
       message.success(formatMessage({ id: 'singUpSuccess' }), 2);
-      userStore.signIn({ ...user })
+      authStore.setToken(token)
+      userStore.setUser({ ...user })
     } catch (error) {
       // show error
       console.error(error)

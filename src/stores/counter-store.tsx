@@ -1,6 +1,8 @@
 import { observable, action, computed } from 'mobx'
+import { persist } from 'mobx-persist'
 
 export class CounterStore {
+  @persist
   @observable
   count = 0
 

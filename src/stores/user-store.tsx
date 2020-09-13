@@ -1,18 +1,41 @@
 import { observable, action } from 'mobx'
+import { persist } from 'mobx-persist'
 
-import { User } from 'types/User'
+import { Gender, User } from 'types/User'
+
+class Location {
+  @persist @observable type = '';
+  @persist('list') @observable coordinates = [0, 0];
+}
+
+class Profile {
+  @persist @observable name = '';
+  @persist @observable gender: Gender = Gender.male;
+  @persist @observable birthday = new Date();
+  @persist @observable about = '';
+  @persist @observable location = '';
+  @persist @observable website = '';
+  @persist @observable picture = '';
+}
 
 export class UserStore {
-  @observable
-  user: User | null = null
+  @persist @observable email = '';
+  @persist @observable password = '';
+
+  @persist('object') @observable location = new Location();
+
+  @persist('object') @observable profile = new Profile();
 
   @action
-  signIn(user: User) {
-    this.user = user
+  setUser(user: User) {
+    this.email = user.email
+    this.password = user.password
+    this.location = user.location
+    this.profile = user.profile
   }
 
   @action
-  singOut() {
-    this.user = null
+  updateAbout(value: string) {
+    this.profile.about = value
   }
 }

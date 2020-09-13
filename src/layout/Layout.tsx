@@ -5,7 +5,9 @@ import styled from 'styled-components'
 import { NavLink, useLocation } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
-const { Header, Footer, Content } = AntLayout;
+import Navigation from 'components/Navigation'
+
+const { Header, Footer, Content, Sider } = AntLayout;
 
 type Props = {
   children: ReactNode
@@ -35,11 +37,16 @@ const Layout = ({ children }: Props) => {
             </Menu>
           </HeaderWrapper>
         </Header>
-        <Content>
-          <ContentWrapper>
-            {children}
-          </ContentWrapper>
-        </Content>
+        <AntLayout>
+          <Sider>
+            <Navigation />
+          </Sider>
+          <Content>
+            <ContentWrapper>
+              {children}
+            </ContentWrapper>
+          </Content>
+        </AntLayout>
         <Footer style={{ textAlign: 'center', padding: '12px 25px' }}>Footer</Footer>
       </AntLayout>
     </Wrapper>

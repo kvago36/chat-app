@@ -22,10 +22,10 @@ import { lightTheme, darkTheme } from 'theme';
 import { GlobalStyles } from 'global';
 
 function App() {
-  const { userStore, themeStore } = useStores()
+  const { authStore, themeStore } = useStores()
   const themeMode = themeStore.theme === 'light' ? lightTheme : darkTheme;
 
-  console.log(userStore.user)
+  console.log(useStores())
 
   return (
     <IntlProvider locale="en" messages={messages}>
@@ -47,7 +47,7 @@ function App() {
             </Route>
           </Switch>
           <Route exact path="/">
-            {userStore.user ? <Home /> : <Redirect to="/login" />}
+            {authStore.token ? <Home /> : <Redirect to="/login" />}
           </Route>
         </Router>
       </ThemeProvider>

@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { Input } from 'antd';
 import styled from 'styled-components'
 
 import Layout from 'layout/Layout'
@@ -7,8 +8,20 @@ import Layout from 'layout/Layout'
 import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
 
+const { TextArea } = Input;
+
 export const Counter = observer(() => {
-  const { counterStore, themeStore } = useStores()
+  const { counterStore, themeStore, userStore } = useStores()
+  const { profile: { about } } = userStore
+
+  console.log(about, '1')
+
+  const changeUserInfo = (event: any) => {
+    const { name, value } = event.target
+
+    console.log(name, value)
+    userStore.updateAbout(value)
+  }
 
   return (
     <Layout>
@@ -20,8 +33,9 @@ export const Counter = observer(() => {
       <Button onClick={() => themeStore.setTheme(Theme.dark)}>
         set theme: dark
       </Button>
-      <Button onClick={() => counterStore.increment()}>++</Button>
-      <Button onClick={() => counterStore.decrement()}>--</Button>
+      <Button onClick={() => counterStore.increment()}>+</Button>
+      <Button onClick={() => counterStore.decrement()}>-</Button>
+      <TextArea name="about" defaultValue={'about'} onPressEnter={changeUserInfo} onBlur={changeUserInfo} rows={4} />
     </Layout>
   )
 })

@@ -9,16 +9,15 @@ export type User = {
 
   location: {
     type: string,
-    coordinates: number
+    coordinates: [number]
   },
-
-  token: string,
 
   profile: {
     name: string;
     gender: Gender;
     birthday: Date,
     location: string;
+    about: string;
     website: string;
     picture: string;
   };

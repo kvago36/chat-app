@@ -28,7 +28,7 @@ const Login = observer(() => {
   const [ isLoading, setloading ] = useState(false)
   const [ authorization, setAuthorization ] = useState(false)
   const { formatMessage } = useIntl()
-  const { userStore } = useStores()
+  const { userStore, authStore } = useStores()
 
   const onFinish = async (values: any) => {
     const { email, password } = values
@@ -53,7 +53,8 @@ const Login = observer(() => {
       const { profile: { name, date, ...restProfile }, ...restUser } = user
 
       message.success(formatMessage({ id: 'singInSuccess' }, { name }), 2);
-      userStore.signIn({ ...restUser, profile: { name, date: new Date(date), ...restProfile }, token })
+      authStore.setToken(token)
+      userStore.setUser({ ...restUser, profile: { name, birthday: new Date(date), ...restProfile } })
       setTimeout(() => setAuthorization(true), 200)
     } catch (error) {
       // show error

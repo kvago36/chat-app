@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx'
+import { persist } from 'mobx-persist'
 
 const localTheme = window.localStorage.getItem('theme');
 const matcher = window.matchMedia('(prefers-color-scheme:dark)')
@@ -9,6 +10,7 @@ export enum Theme {
 }
 
 export class ThemeStore {
+  @persist
   @observable
   theme = localTheme ? localTheme : matcher.matches ? 'dark' : 'light'
 
