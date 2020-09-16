@@ -20,7 +20,6 @@ import { useStores } from 'hooks/use-stores'
 import Layout from 'layout/Layout'
 
 import { isEmail } from 'utils'
-import { AuthStore } from 'stores/auth-store';
 
 const layout = {
   labelCol: { span: 8 },

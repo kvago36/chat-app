@@ -30,5 +30,8 @@ export const messages = {
   country: 'country',
   region: 'region',
   city: 'city',
-  agreement: 'Should accept agreement'
+  agreement: 'Should accept agreement',
+  navigationPage: 'My Page',
+  navigationMessages: 'Messages',
+  navigationSettings: 'Settings',
 }

@@ -4,9 +4,11 @@ export enum Gender {
 }
 
 export type User = {
+  id: string;
   email: string;
   password: string;
-
+  login: string;
+  
   location: {
     type: string,
     coordinates: [number]

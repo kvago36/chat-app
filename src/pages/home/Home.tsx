@@ -1,4 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import {
+  Switch,
+  Route,
+  Redirect,
+  useParams,
+  useLocation
+} from 'react-router-dom';
 import { observer } from 'mobx-react'
 import { Input } from 'antd';
 import styled from 'styled-components'
@@ -8,13 +15,36 @@ import Layout from 'layout/Layout'
 import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
 
+import axios from 'axiosConfig'
+
 const { TextArea } = Input;
 
+const MyPage = () => <p>MyPage</p>
+const Messages = () => <p>Messages</p>
+const Settings = () => <p>Settings</p>
+
 export const Counter = observer(() => {
+  const location = useLocation();
+  const [isFetching, setFetching] = useState(false)
   const { counterStore, themeStore, userStore } = useStores()
   const { profile: { about } } = userStore
+  const { userId } = useParams();
 
-  console.log(about, '1')
+  useEffect(() => {
+    (async () => {
+      setFetching(true)
+      try {
+        const response = await axios.get(`/users/${userId}`)
+        const { user, error } = await response.data
+
+        console.log(user, error)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setFetching(false)
+      }
+    })()
+  }, [])
 
   const changeUserInfo = (event: any) => {
     const { name, value } = event.target
@@ -27,6 +57,18 @@ export const Counter = observer(() => {
     <Layout>
       <div>{counterStore.doubleCount}</div>
       <div>{themeStore.theme}</div>
+      <Switch>
+        <Route path="/">
+          <MyPage />
+        </Route>
+        <Route path="/messages">
+          <Messages />
+        </Route>
+        <Route path="/settings">
+          <Settings />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
       <Button onClick={() => themeStore.setTheme(Theme.light)}>
         set theme: light
       </Button>

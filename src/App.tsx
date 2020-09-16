@@ -9,6 +9,7 @@ import { IntlProvider } from 'react-intl'
 import { observer } from 'mobx-react'
 import { ThemeProvider } from 'styled-components';
 
+import Main from 'pages/main'
 import SingIn from 'pages/login'
 import SingUp from 'pages/registration'
 import Home from 'pages/home'
@@ -25,14 +26,15 @@ function App() {
   const { authStore, themeStore } = useStores()
   const themeMode = themeStore.theme === 'light' ? lightTheme : darkTheme;
 
-  console.log(useStores())
-
   return (
     <IntlProvider locale="en" messages={messages}>
       <ThemeProvider theme={themeMode}>
         <GlobalStyles />
         <Router>
           <Switch>
+          <Route exact path="/">
+              <Main />
+            </Route>
             <Route path="/login">
               <SingIn />
             </Route>
@@ -42,11 +44,8 @@ function App() {
             <Route path="/test">
               <Test />
             </Route>
-            <Route path="/home">
-              <Home />
-            </Route>
           </Switch>
-          <Route exact path="/">
+          <Route exact path="/users/:userId">
             {authStore.token ? <Home /> : <Redirect to="/login" />}
           </Route>
         </Router>

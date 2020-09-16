@@ -26,7 +26,7 @@ const tailLayout = {
 
 const Login = observer(() => {
   const [ isLoading, setloading ] = useState(false)
-  const [ authorization, setAuthorization ] = useState(false)
+  const [ authorization, setAuthorization ] = useState<any>(null)
   const { formatMessage } = useIntl()
   const { userStore, authStore } = useStores()
 
@@ -40,7 +40,6 @@ const Login = observer(() => {
 
     try {
       const response = await axios.post('/users/signin', { email, password })
-
       const { user, token, error } = await response.data
 
       message.destroy()
@@ -55,7 +54,7 @@ const Login = observer(() => {
       message.success(formatMessage({ id: 'singInSuccess' }, { name }), 2);
       authStore.setToken(token)
       userStore.setUser({ ...restUser, profile: { name, birthday: new Date(date), ...restProfile } })
-      setTimeout(() => setAuthorization(true), 200)
+      setTimeout(() => setAuthorization(user), 200)
     } catch (error) {
       // show error
       console.error(error)
@@ -68,8 +67,8 @@ const Login = observer(() => {
     console.log('Failed:', errorInfo);
   };
 
-  if (authorization) {
-    return <Redirect to='' />
+  if (authorization !== null) {
+    return <Redirect to={{ pathname: `/users/${authorization.profile.name}`, state: authorization }} />
   }
 
   return (

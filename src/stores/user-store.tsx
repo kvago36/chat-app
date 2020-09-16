@@ -19,6 +19,8 @@ class Profile {
 }
 
 export class UserStore {
+  @persist @observable id = '';
+  @persist @observable login = '';
   @persist @observable email = '';
   @persist @observable password = '';
 
@@ -28,6 +30,8 @@ export class UserStore {
 
   @action
   setUser(user: User) {
+    this.id = user.id
+    this.login = user.login
     this.email = user.email
     this.password = user.password
     this.location = user.location
