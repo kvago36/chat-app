@@ -4,7 +4,8 @@ import {
   Route,
   Redirect,
   useParams,
-  useLocation
+  useLocation,
+  useRouteMatch
 } from 'react-router-dom';
 import { observer } from 'mobx-react'
 import { Input } from 'antd';
@@ -15,20 +16,21 @@ import Layout from 'layout/Layout'
 import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
 
+import Page from './views/Page'
+import Settings from './views/Settings'
+import Messages from './views/Messages'
+
 import axios from 'axiosConfig'
 
 const { TextArea } = Input;
-
-const MyPage = () => <p>MyPage</p>
-const Messages = () => <p>Messages</p>
-const Settings = () => <p>Settings</p>
 
 export const Counter = observer(() => {
   const location = useLocation();
   const [isFetching, setFetching] = useState(false)
   const { counterStore, themeStore, userStore } = useStores()
   const { profile: { about } } = userStore
-  const { userId } = useParams();
+  const { userId } = useParams()
+  const { path } = useRouteMatch()
 
   useEffect(() => {
     (async () => {
@@ -58,16 +60,15 @@ export const Counter = observer(() => {
       <div>{counterStore.doubleCount}</div>
       <div>{themeStore.theme}</div>
       <Switch>
-        <Route path="/">
-          <MyPage />
+        <Route exact path={`${path}/`}>
+          <Page />
         </Route>
-        <Route path="/messages">
+        <Route path={`${path}/messages`}>
           <Messages />
         </Route>
-        <Route path="/settings">
+        <Route path={`${path}/settings`}>
           <Settings />
         </Route>
-        <Redirect to="/" />
       </Switch>
       <Button onClick={() => themeStore.setTheme(Theme.light)}>
         set theme: light

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react'
-import { Select, InputNumber, Form, Row, Col, Button } from 'antd';
+import { Select, InputNumber, Form, Row, Col } from 'antd';
 import styled from 'styled-components'
 
 import Layout from 'layout/Layout'
@@ -9,6 +9,8 @@ import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
 
 import axios from 'axiosConfig'
+
+import { StyledButton } from 'components/styled/Button/Button'
 
 import { Filter } from 'types/Filter'
 import { User } from 'types/User'
@@ -45,7 +47,7 @@ export const Main = observer(() => {
 
       setUsers(users)
     } catch (error) {
-      console.error(error)
+      console.error(error, 1131231231231221)
     } finally {
       setFetching(false)
     }
@@ -63,14 +65,14 @@ export const Main = observer(() => {
 
   return (
     <Layout>
-      <CustomButton onClick={() => themeStore.setTheme(Theme.light)}>
+      <StyledButton onClick={() => themeStore.setTheme(Theme.light)}>
         set theme: light
-      </CustomButton>
-      <CustomButton onClick={() => themeStore.setTheme(Theme.dark)}>
+      </StyledButton>
+      <StyledButton onClick={() => themeStore.setTheme(Theme.dark)}>
         set theme: dark
-      </CustomButton>
-      <CustomButton onClick={() => counterStore.increment()}>+</CustomButton>
-      <CustomButton onClick={() => counterStore.decrement()}>-</CustomButton>
+      </StyledButton>
+      <StyledButton type='dashed' onClick={() => counterStore.increment()}>+</StyledButton>
+      <StyledButton type='dashed' onClick={() => counterStore.decrement()}>-</StyledButton>
 
       <FiltersWrapper>
         <Form
@@ -146,15 +148,15 @@ export const Main = observer(() => {
           </Row>
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" htmlType="submit">
+              <StyledButton type="primary" htmlType="submit">
                 Search
-              </Button>
-              <Button
+              </StyledButton>
+              <StyledButton
                 style={{ margin: '0 8px' }}
                 onClick={resetFields}
               >
                 Clear
-              </Button>
+              </StyledButton>
             </Col>
           </Row>
         </Form>
@@ -169,17 +171,5 @@ export const Main = observer(() => {
 const FiltersWrapper = styled.div`
   display: flex;
 `
-
-const CustomButton = styled.button`
-  /* Adapt the colors based on primary prop */
-  background: ${({ theme }) => theme.body};
-  color: ${({ theme }) => theme.text};
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  outline: none;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
-`;
 
 export default Main

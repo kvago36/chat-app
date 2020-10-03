@@ -3,27 +3,18 @@ import { NavLink } from 'react-router-dom'
 import { FormattedMessage } from 'react-intl'
 import styled from 'styled-components' 
 
-const list = [
-  {
-    name: 'Page',
-    href: '/'
-  },
-  {
-    name: 'Messages',
-    href: '/messages'
-  },
-  { 
-    name: 'Settings',
-    href: '/settigs'
-  }
-]
+import { useStores } from 'hooks/use-stores'
 
 const Navigation = () => {
+  const { userStore } = useStores()
+
+  console.log(userStore.id)
+
   return (
     <SideBar>
-      {
-        list.map(({ name, href }) => <NavLink to={href}>{<FormattedMessage id={`navigation${name}`} />}</NavLink >)
-      }
+      <NavLink to={`/users/${userStore.id}`}><FormattedMessage id="navigationPage" /></NavLink>
+      <NavLink to={`/users/${userStore.id}/messages`}><FormattedMessage id="navigationMessages" /></NavLink>
+      <NavLink to={`/users/${userStore.id}/settings`}><FormattedMessage id="navigationSettings" /></NavLink>
     </SideBar>
   )
 }

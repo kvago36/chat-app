@@ -17,13 +17,11 @@ import axios from 'axiosConfig'
 
 import { useStores } from 'hooks/use-stores'
 
-import Layout from 'layout/Layout'
-
 import { isEmail } from 'utils'
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 10 },
+  wrapperCol: { span: 18 },
 };
 
 const tailLayout = {
@@ -40,7 +38,7 @@ const Registration = observer(() => {
   const { formatMessage } = useIntl()
   const { userStore, authStore } = useStores()
 
-  const onFinishFailed = () => {}
+  const onFinishFailed = () => { }
 
   const validateEmail = async (email: string) => {
     try {
@@ -63,7 +61,7 @@ const Registration = observer(() => {
     setLoading(true)
 
     message
-    .loading(formatMessage({ id: 'loading' }))
+      .loading(formatMessage({ id: 'loading' }))
 
     try {
       const response = await axios.post('/users/signup', {
@@ -88,160 +86,158 @@ const Registration = observer(() => {
     } catch (error) {
       // show error
       console.error(error)
-    } finally{
+    } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Layout>
-      <Form
-        {...layout}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+    <Form
+      {...layout}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+    >
+      <Form.Item
+        name="name"
+        label={formatMessage({ id: 'name' })}
+        style={capitalizeText}
+        rules={[{ required: true, message: formatMessage({ id: 'nameRequired' }) }]}
       >
-        <Form.Item
-          name="name"
-          label={formatMessage({ id: 'name' })}
-          style={capitalizeText}
-          rules={[{ required: true, message: formatMessage({id: 'nameRequired'}) }]}
-        >
-          <Input name="name" />
-        </Form.Item>
-        <Form.Item
-          name="email"
-          label={formatMessage({ id: 'email' })}
-          style={capitalizeText}
-          rules={[
-            { 
-              required: true,
-              message: formatMessage({id: 'emailRequired'})
-            },
-            ({ getFieldError }) => ({
-              validator(rule, value) {
-                return new Promise((resolve, reject) => {
-                  if (timeoutId) {
-                    clearTimeout(timeoutId)
+        <Input name="name" />
+      </Form.Item>
+      <Form.Item
+        name="email"
+        label={formatMessage({ id: 'email' })}
+        style={capitalizeText}
+        rules={[
+          {
+            required: true,
+            message: formatMessage({ id: 'emailRequired' })
+          },
+          ({ getFieldError }) => ({
+            validator(rule, value) {
+              return new Promise((resolve, reject) => {
+                if (timeoutId) {
+                  clearTimeout(timeoutId)
+                }
+
+                setTimeoutId(setTimeout(async () => {
+                  if (!isEmail(value)) {
+                    return reject(formatMessage({ id: 'emailNotValid' }))
                   }
 
-                  setTimeoutId(setTimeout(async () => {
-                    if (!isEmail(value)) {
-                      return reject(formatMessage({ id: 'emailNotValid' }))
-                    }
+                  const canUseEmail = await validateEmail(value)
 
-                    const canUseEmail = await validateEmail(value)
-
-                    if (canUseEmail) {
-                      resolve();
-                    } else {
-                      reject(formatMessage({ id: 'emailAlreadyTaken' }))
-                    }
-                  }, 200))
-                })
-              },
-            }),
-          ]}
-          hasFeedback
-        >
-          <Input name="email" />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          style={capitalizeText}
-          label={formatMessage({ id: 'password' })}
-          rules={[{ required: true, message: formatMessage({ id: 'passwordRequired' }) }]}
-          hasFeedback
-        >
-          <Input.Password name="password" autoComplete="new-password" />
-        </Form.Item>
-        <Form.Item
-          name="confirm"
-          style={capitalizeText}
-          label={formatMessage({id: 'comfirmPassword'})}
-          dependencies={['password']}
-          hasFeedback
-          rules={[
-            {
-              required: true,
-              message: formatMessage({ id: 'comfirmPasswordRequired' }),
+                  if (canUseEmail) {
+                    resolve();
+                  } else {
+                    reject(formatMessage({ id: 'emailAlreadyTaken' }))
+                  }
+                }, 200))
+              })
             },
-            ({ getFieldValue }) => ({
-              validator(rule, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(formatMessage({ id: 'passwordDidNotMatch' }));
-              },
-            }),
-          ]}
-       >
+          }),
+        ]}
+        hasFeedback
+      >
+        <Input name="email" />
+      </Form.Item>
+      <Form.Item
+        name="password"
+        style={capitalizeText}
+        label={formatMessage({ id: 'password' })}
+        rules={[{ required: true, message: formatMessage({ id: 'passwordRequired' }) }]}
+        hasFeedback
+      >
+        <Input.Password name="password" autoComplete="new-password" />
+      </Form.Item>
+      <Form.Item
+        name="confirm"
+        style={capitalizeText}
+        label={formatMessage({ id: 'comfirmPassword' })}
+        dependencies={['password']}
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: formatMessage({ id: 'comfirmPasswordRequired' }),
+          },
+          ({ getFieldValue }) => ({
+            validator(rule, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(formatMessage({ id: 'passwordDidNotMatch' }));
+            },
+          }),
+        ]}
+      >
         <Input.Password />
       </Form.Item>
-        <Form.Item
-          name="gender"
-          style={{ textTransform: 'capitalize' }}
-          label={formatMessage({ id: 'gender' })}
-          rules={[{ required: true, message: formatMessage({id: 'genderRequired'}) }]}
-        >
-          <Radio.Group>
-            <Radio.Button value="male"><FormattedMessage id="male" /></Radio.Button>
-            <Radio.Button value="female"><FormattedMessage id="female" /></Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          name="country"
-          style={{ textTransform: 'capitalize' }}
-          label={formatMessage({ id: 'country' })}
-        >
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="region"
-          style={{ textTransform: 'capitalize' }}
-          label={formatMessage({ id: 'region' })}
-        >
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="city"
-          style={{ textTransform: 'capitalize' }}
-          label={formatMessage({ id: 'city' })}
-        >
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="date"
-          style={{ textTransform: 'capitalize' }}
-          label={formatMessage({ id: 'birthdayDate' })}
-          rules={[{ required: true, message: formatMessage({id: 'birthdayDateRequired'}) }]}
-        >
-          <DatePicker />
-        </Form.Item>
-        <Form.Item
-          {...tailLayout}
-          name="agreement"
-          valuePropName="checked"
-          rules={[
-            { validator:(_, value) => value ? Promise.resolve() : Promise.reject(formatMessage({ id: 'agreement'})) },
-          ]}
-        >
-          <Checkbox>
-            I have read the <a href="">agreement</a>
-          </Checkbox>
-        </Form.Item>
-        <Form.Item {...tailLayout}>
-          <Button disabled={isLoading} type="primary" htmlType="submit">
-            <FormattedMessage id="buttonSubmit" />
-          </Button>
-        </Form.Item>
-      </Form>
-    </Layout>
+      <Form.Item
+        name="gender"
+        style={{ textTransform: 'capitalize' }}
+        label={formatMessage({ id: 'gender' })}
+        rules={[{ required: true, message: formatMessage({ id: 'genderRequired' }) }]}
+      >
+        <Radio.Group>
+          <Radio.Button value="male"><FormattedMessage id="male" /></Radio.Button>
+          <Radio.Button value="female"><FormattedMessage id="female" /></Radio.Button>
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item
+        name="country"
+        style={{ textTransform: 'capitalize' }}
+        label={formatMessage({ id: 'country' })}
+      >
+        <Select>
+          <Select.Option value="demo">Demo</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="region"
+        style={{ textTransform: 'capitalize' }}
+        label={formatMessage({ id: 'region' })}
+      >
+        <Select>
+          <Select.Option value="demo">Demo</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="city"
+        style={{ textTransform: 'capitalize' }}
+        label={formatMessage({ id: 'city' })}
+      >
+        <Select>
+          <Select.Option value="demo">Demo</Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="date"
+        style={{ textTransform: 'capitalize' }}
+        label={formatMessage({ id: 'birthdayDate' })}
+        rules={[{ required: true, message: formatMessage({ id: 'birthdayDateRequired' }) }]}
+      >
+        <DatePicker />
+      </Form.Item>
+      <Form.Item
+        {...tailLayout}
+        name="agreement"
+        valuePropName="checked"
+        rules={[
+          { validator: (_, value) => value ? Promise.resolve() : Promise.reject(formatMessage({ id: 'agreement' })) },
+        ]}
+      >
+        <Checkbox>
+          I have read the <a href="">agreement</a>
+        </Checkbox>
+      </Form.Item>
+      <Form.Item {...tailLayout}>
+        <Button disabled={isLoading} type="primary" htmlType="submit">
+          <FormattedMessage id="buttonSubmit" />
+        </Button>
+      </Form.Item>
+    </Form>
   );
 });
 

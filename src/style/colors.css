@@ -1,2 +1,19 @@
-@value grey: #b5b5b5;
-@value white: #ffffff;
+/* As hex codes */
+
+.color-primary-0 { color: #B72273 }	/* Main Primary color */
+.color-primary-1 { color: #D86BA6 }
+.color-primary-2 { color: #C44289 }
+.color-primary-3 { color: #950E58 }
+.color-primary-4 { color: #760040 }
+
+.color-secondary-1-0 { color: #E22E29 }	/* Main Secondary color (1) */
+.color-secondary-1-1 { color: #FF827E }
+.color-secondary-1-2 { color: #F35652 }
+.color-secondary-1-3 { color: #B81511 }
+.color-secondary-1-4 { color: #910400 }
+
+.color-secondary-2-0 { color: #6F2296 }	/* Main Secondary color (2) */
+.color-secondary-2-1 { color: #9D61BB }
+.color-secondary-2-2 { color: #803CA2 }
+.color-secondary-2-3 { color: #57117B }
+.color-secondary-2-4 { color: #420561 }

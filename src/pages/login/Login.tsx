@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router' 
-import styled from 'styled-components'
+import { useLocation, Redirect } from 'react-router-dom'
 import { FormattedMessage, useIntl } from 'react-intl';
 import { observer } from 'mobx-react'
 import { Form, Input, Button, Checkbox, message } from 'antd';
@@ -25,8 +24,9 @@ const tailLayout = {
 };
 
 const Login = observer(() => {
-  const [ isLoading, setloading ] = useState(false)
-  const [ authorization, setAuthorization ] = useState<any>(null)
+  const [isLoading, setloading] = useState(false)
+  const [authorization, setAuthorization] = useState<any>(null)
+  const location = useLocation()
   const { formatMessage } = useIntl()
   const { userStore, authStore } = useStores()
 
@@ -36,7 +36,7 @@ const Login = observer(() => {
     setloading(true)
 
     message
-    .loading(formatMessage({ id: 'loading' }))
+      .loading(formatMessage({ id: 'loading' }))
 
     try {
       const response = await axios.post('/users/signin', { email, password })
@@ -68,68 +68,60 @@ const Login = observer(() => {
   };
 
   if (authorization !== null) {
-    return <Redirect to={{ pathname: `/users/${authorization.profile.name}`, state: authorization }} />
+    const { from } = location.state || {}
+
+    return <Redirect to={{ pathname: from || `/users/${authorization.profile.name}`, state: authorization }} />
   }
 
   return (
-    <Wrapper>
-      <Form
-        {...layout}
-        size="middle"
-        name="basic"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+    <Form
+      {...layout}
+      size="middle"
+      name="basic"
+      initialValues={{ remember: true }}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+    >
+      <Form.Item
+        label={formatMessage({ id: 'email' })}
+        style={{ textTransform: 'capitalize' }}
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: formatMessage({ id: 'emailRequired' })
+          },
+          {
+            type: 'email',
+            message: formatMessage({ id: 'emailNotValid' }),
+          },
+        ]}
       >
-        <Form.Item
-          label={formatMessage({id: 'email'})}
-          style={{ textTransform: 'capitalize' }}
-          name="email"
-          rules={[
-            { 
-              required: true,
-              message: formatMessage({id: 'emailRequired'})
-            },
-            {
-              type: 'email',
-              message: formatMessage({id: 'emailNotValid'}),
-            },
-          ]}
-        >
-          <Input name="email" prefix={<UserOutlined style={{ color: '#b5b5b5' }} />} placeholder="Username" autoComplete="off" />
-        </Form.Item>
+        <Input name="email" prefix={<UserOutlined style={{ color: '#b5b5b5' }} />} placeholder="Username" autoComplete="off" />
+      </Form.Item>
 
-        <Form.Item
-          label={formatMessage({id: 'password'})}
-          style={{ textTransform: 'capitalize' }}
-          name="password"
-          rules={[{ required: true, message: formatMessage({id: 'passwordRequired'}) }]}
-        >
-          <Input.Password name="password" prefix={<LockOutlined style={{ color: '#b5b5b5' }} />} placeholder="Password" autoComplete="new-password" />
-        </Form.Item>
+      <Form.Item
+        label={formatMessage({ id: 'password' })}
+        style={{ textTransform: 'capitalize' }}
+        name="password"
+        rules={[{ required: true, message: formatMessage({ id: 'passwordRequired' }) }]}
+      >
+        <Input.Password name="password" prefix={<LockOutlined style={{ color: '#b5b5b5' }} />} placeholder="Password" autoComplete="new-password" />
+      </Form.Item>
 
-        <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-          <Checkbox>
-            <FormattedMessage id="checkboxRemember" />
-          </Checkbox>
-        </Form.Item>
+      <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+        <Checkbox>
+          <FormattedMessage id="checkboxRemember" />
+        </Checkbox>
+      </Form.Item>
 
-        <Form.Item {...tailLayout}>
-          <Button disabled={isLoading} type="primary" htmlType="submit">
-            <FormattedMessage id="buttonSubmit" />
-          </Button>
-        </Form.Item>
-      </Form>
-    </Wrapper>
+      <Form.Item {...tailLayout}>
+        <Button disabled={isLoading} type="primary" htmlType="submit">
+          <FormattedMessage id="buttonSubmit" />
+        </Button>
+      </Form.Item>
+    </Form>
   )
 })
-
-const Wrapper = styled.div`
-  background: white;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export default Login

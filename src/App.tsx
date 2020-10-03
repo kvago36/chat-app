@@ -3,11 +3,14 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  RouteProps
 } from 'react-router-dom';
 import { IntlProvider } from 'react-intl'
 import { observer } from 'mobx-react'
 import { ThemeProvider } from 'styled-components';
+
+import AuthLayout from 'layout/AuthLayout'
 
 import Main from 'pages/main'
 import SingIn from 'pages/login'
@@ -22,9 +25,13 @@ import { useStores } from 'hooks/use-stores';
 import { lightTheme, darkTheme } from 'theme';
 import { GlobalStyles } from 'global';
 
+const PublicRoute = ({ children: Component, ...rest }: RouteProps) => <AuthLayout><Route {...rest}>{Component}</Route></AuthLayout>
+
 function App() {
   const { authStore, themeStore } = useStores()
   const themeMode = themeStore.theme === 'light' ? lightTheme : darkTheme;
+
+  console.log(authStore.token)
 
   return (
     <IntlProvider locale="en" messages={messages}>
@@ -35,17 +42,17 @@ function App() {
           <Route exact path="/">
               <Main />
             </Route>
-            <Route path="/login">
+            <PublicRoute path="/login">
               <SingIn />
-            </Route>
-            <Route path="/registration">
+            </PublicRoute>
+            <PublicRoute path="/registration">
               <SingUp />
-            </Route>
+            </PublicRoute>
             <Route path="/test">
               <Test />
             </Route>
           </Switch>
-          <Route exact path="/users/:userId">
+          <Route path="/users/:userId">
             {authStore.token ? <Home /> : <Redirect to="/login" />}
           </Route>
         </Router>
