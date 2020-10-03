@@ -68,7 +68,7 @@ const Header = () => {
           }
 
           {
-            authStore.token && (
+            !authStore.token && (
               <StyledMenuItem key="login">
                 <NavLink to="/login">
                   <FormattedMessage id="login" />
@@ -78,7 +78,7 @@ const Header = () => {
           }
 
           {
-            authStore.token && (
+            !authStore.token && (
               <StyledMenuItem key="registration">
                 <NavLink to="/registration">
                   <FormattedMessage id="registration" />
@@ -88,7 +88,16 @@ const Header = () => {
           }
 
           <SubMenu key="SubMenu" title="Navigation Three - Submenu">
-            <StyledMenuItem key="setting:1">Option 1</StyledMenuItem>
+            <StyledMenuItem key="about">
+              <NavLink to="/about">
+                <FormattedMessage id="about" />
+              </NavLink>
+            </StyledMenuItem>
+            <StyledMenuItem key="contacts">
+              <NavLink to="/contacts">
+                <FormattedMessage id="contacts" />
+              </NavLink>
+            </StyledMenuItem>
             <StyledMenuItem key="setting:2">Option 2</StyledMenuItem>
             <StyledMenuItem key="setting:3">Option 3</StyledMenuItem>
             <StyledMenuItem key="setting:4">Option 4</StyledMenuItem>
@@ -106,9 +115,9 @@ const Header = () => {
             )
           }
         </StyledMenu>
-        <MobileMenu>
+        {/* <MobileMenu>
           <Hamburger />
-        </MobileMenu>
+        </MobileMenu> */}
       </HeaderWrapper>
     </StyledHeader>
   )

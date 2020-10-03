@@ -13,9 +13,12 @@ import { ThemeProvider } from 'styled-components';
 import AuthLayout from 'layout/AuthLayout'
 
 import Main from 'pages/main'
+import About from 'pages/about'
+import Contacts from 'pages/contacts'
 import SingIn from 'pages/login'
 import SingUp from 'pages/registration'
 import Home from 'pages/home'
+
 import Test from 'pages/rxjs/sockets'
 
 import { messages } from 'locale/messages'
@@ -47,6 +50,12 @@ function App() {
             </PublicRoute>
             <PublicRoute path="/registration">
               <SingUp />
+            </PublicRoute>
+            <PublicRoute path="/about">
+              <About />
+            </PublicRoute>
+            <PublicRoute path="/contacts">
+              <Contacts />
             </PublicRoute>
             <Route path="/test">
               <Test />

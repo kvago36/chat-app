@@ -18,6 +18,8 @@ export const messages = {
   signIn: 'Signin',
   signUp: 'Signup',
   login: 'Login',
+  contacts: 'Contacts',
+  about: 'About us',
   registration: 'Registration',
   male: 'male',
   female: 'female',
