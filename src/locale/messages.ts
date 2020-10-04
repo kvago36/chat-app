@@ -39,4 +39,6 @@ export const messages = {
   navigationPage: 'My Page',
   navigationMessages: 'Messages',
   navigationSettings: 'Settings',
+  sessionError: 'Your session has been expired, please re-login to the site',
+  authorizationError: 'Please, authorize to watch this page'
 }

@@ -3,6 +3,7 @@ import { create } from 'mobx-persist'
 import { CounterStore } from 'stores/counter-store'
 import { UserStore } from 'stores/user-store'
 import { ThemeStore } from 'stores/theme-store'
+import { AlertStore } from 'stores/alert-store'
 import { AuthStore } from 'stores/auth-store'
 
 const hydrate = create({
@@ -13,6 +14,7 @@ export class RootStore {
   userStore = new UserStore();
   counterStore = new CounterStore();
   themeStore = new ThemeStore();
+  AlertStore = new AlertStore();
   authStore = new AuthStore();
 
   constructor() {

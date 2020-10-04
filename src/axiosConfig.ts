@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { createBrowserHistory } from 'history'
+import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory();
 
@@ -10,8 +10,10 @@ const instance = axios.create({
 const unauthorizedCatch = (error: any) => {
   // fix later
   if (error.message === 'Request failed with status code 401') {
-    history.push('/login', { error: 'unauthorized', from: window.location.pathname })
-    history.go(0);
+    const redirectTo = { error: 'sessionError', from: window.location.pathname }
+    sessionStorage.setItem('error', JSON.stringify(redirectTo))
+    history.push('/login', redirectTo)
+    history.go(0)
   }
 
   return Promise.reject(error)
