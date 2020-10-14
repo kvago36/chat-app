@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react'
 import {
   Switch,
   Route,
-  Redirect,
   useParams,
   useLocation,
   useRouteMatch
 } from 'react-router-dom';
 import { observer } from 'mobx-react'
-import { Input } from 'antd';
+import { Input, Layout } from 'antd';
 import styled from 'styled-components'
-
-import Layout from 'layout/Layout'
 
 import { useStores } from 'hooks/use-stores'
 import { Theme } from 'stores/theme-store'
+
+import { StyledSider, StyledContent } from 'components/styled/Layout/Layout'
+import Navigation from 'components/navigation'
 
 import Page from './views/Page'
 import Settings from './views/Settings'
@@ -24,12 +24,16 @@ import axios from 'axiosConfig'
 
 const { TextArea } = Input;
 
+interface Params {
+  userId: string
+}
+
 export const Counter = observer(() => {
   const location = useLocation();
   const [isFetching, setFetching] = useState(false)
   const { counterStore, themeStore, userStore } = useStores()
   const { profile: { about } } = userStore
-  const { userId } = useParams()
+  const { userId } = useParams<Params>()
   const { path } = useRouteMatch()
 
   useEffect(() => {
@@ -57,28 +61,33 @@ export const Counter = observer(() => {
 
   return (
     <Layout>
-      <div>{counterStore.doubleCount}</div>
-      <div>{themeStore.theme}</div>
-      <Switch>
-        <Route exact path={`${path}/`}>
-          <Page />
-        </Route>
-        <Route path={`${path}/messages`}>
-          <Messages />
-        </Route>
-        <Route path={`${path}/settings`}>
-          <Settings />
-        </Route>
-      </Switch>
-      <Button onClick={() => themeStore.setTheme(Theme.light)}>
-        set theme: light
-      </Button>
-      <Button onClick={() => themeStore.setTheme(Theme.dark)}>
-        set theme: dark
-      </Button>
-      <Button onClick={() => counterStore.increment()}>+</Button>
-      <Button onClick={() => counterStore.decrement()}>-</Button>
-      <TextArea name="about" defaultValue={'about'} onPressEnter={changeUserInfo} onBlur={changeUserInfo} rows={4} />
+      <StyledSider>
+        <Navigation />
+      </StyledSider>
+      <StyledContent>
+        <div>{counterStore.doubleCount}</div>
+        <div>{themeStore.theme}</div>
+        <Switch>
+          <Route exact path={`${path}/`}>
+            <Page />
+          </Route>
+          <Route path={`${path}/messages`}>
+            <Messages />
+          </Route>
+          <Route path={`${path}/settings`}>
+            <Settings />
+          </Route>
+        </Switch>
+        <Button onClick={() => themeStore.setTheme(Theme.light)}>
+          set theme: light
+        </Button>
+        <Button onClick={() => themeStore.setTheme(Theme.dark)}>
+          set theme: dark
+        </Button>
+        <Button onClick={() => counterStore.increment()}>+</Button>
+        <Button onClick={() => counterStore.decrement()}>-</Button>
+        <TextArea name="about" defaultValue={'about'} onPressEnter={changeUserInfo} onBlur={changeUserInfo} rows={4} />
+      </StyledContent>
     </Layout>
   )
 })

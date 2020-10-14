@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { observer } from 'mobx-react'
 import {
   Form,
   Input,
@@ -8,10 +10,9 @@ import {
   DatePicker,
   Checkbox,
   message,
-} from 'antd';
-import { FormattedMessage, useIntl } from 'react-intl'
-import CSS from 'csstype';
-import { observer } from 'mobx-react'
+} from 'antd'
+import styled from 'styled-components'
+import CSS from 'csstype'
 
 import axios from 'axiosConfig'
 
@@ -92,6 +93,7 @@ const Registration = observer(() => {
   }
 
   return (
+    <Wrapper>
     <Form
       {...layout}
       onFinish={onFinish}
@@ -238,7 +240,16 @@ const Registration = observer(() => {
         </Button>
       </Form.Item>
     </Form>
+    </Wrapper>
   );
 });
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 64px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 export default Registration

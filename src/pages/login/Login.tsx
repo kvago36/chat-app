@@ -60,14 +60,9 @@ const Login = observer(() => {
 
     try {
       const response = await axios.post('/users/signin', { email, password })
-      const { user, token, error } = await response.data
+      const { user, token } = await response.data
 
       message.destroy()
-
-      if (error) {
-        message.error(formatMessage({ id: 'singInError' }), 3);
-        return;
-      }
 
       const { profile: { name, date, ...restProfile }, ...restUser } = user
 
@@ -76,8 +71,8 @@ const Login = observer(() => {
       userStore.setUser({ ...restUser, profile: { name, birthday: new Date(date), ...restProfile } })
       setTimeout(() => setAuthorization(user), 200)
     } catch (error) {
-      // show error
-      console.error(error)
+      message.destroy()
+      message.error(formatMessage({ id: 'singInError' }), 3);
     } finally {
       setloading(false)
     }
@@ -85,16 +80,16 @@ const Login = observer(() => {
 
   const onFinishFailed = (errorInfo: any): void | undefined => {
     console.log('Failed:', errorInfo);
-  };
+  }
 
   if (authorization !== null) {
     const { from } = location.state || {}
 
-    return <Redirect to={{ pathname: from || `/users/${authorization.profile.name}`, state: authorization }} />
+    return <Redirect to={{ pathname: from || `/users/${authorization.id}`, state: authorization }} />
   }
 
   return (
-    <>
+    <Wrapper>
       {
         location.state?.error && <CustomAlert banner closable message={<FormattedMessage id={location.state.error} />} type="error" showIcon />
       }
@@ -145,9 +140,17 @@ const Login = observer(() => {
           </Button>
         </Form.Item>
       </Form>
-    </>
+    </Wrapper>
   )
 })
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 64px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const CustomAlert = styled(Alert)`
   position: fixed;

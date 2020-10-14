@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,19 +6,11 @@ import {
   RouteProps,
   useHistory,
   useLocation
-} from 'react-router-dom';
+} from 'react-router-dom'
 import { IntlProvider } from 'react-intl'
 import { observer } from 'mobx-react'
-import { ThemeProvider } from 'styled-components';
-
-import AuthLayout from 'layout/AuthLayout'
-
-import Main from 'pages/main'
-import About from 'pages/about'
-import Contacts from 'pages/contacts'
-import SingIn from 'pages/login'
-import SingUp from 'pages/registration'
-import Home from 'pages/home'
+import { Layout } from 'antd'
+import { ThemeProvider } from 'styled-components'
 
 import Test from 'pages/rxjs/sockets'
 
@@ -29,7 +21,16 @@ import { useStores } from 'hooks/use-stores';
 import { lightTheme, darkTheme } from 'theme';
 import { GlobalStyles } from 'global';
 
-const PublicRoute = ({ children: Component, path, ...rest }: RouteProps) => <AuthLayout><Route {...rest}>{Component}</Route></AuthLayout>
+import Header from 'components/header'
+
+const Main = lazy(() => import('pages/main'))
+const About = lazy(() => import('pages/about'))
+const Contacts = lazy(() => import('pages/contacts'))
+const SingIn = lazy(() => import('pages/login'))
+const SingUp = lazy(() => import('pages/registration'))
+const Home = lazy(() => import('pages/home'))
+
+const PublicRoute = ({ children: Component, path, ...rest }: RouteProps) => <Route {...rest}>{Component}</Route>
 
 const ProtectedRoute = ({ children: Component, ...rest }: RouteProps) => {
   const { authStore } = useStores()
@@ -46,35 +47,43 @@ const ProtectedRoute = ({ children: Component, ...rest }: RouteProps) => {
 function App() {
   const { themeStore } = useStores()
   const themeMode = themeStore.theme === 'light' ? lightTheme : darkTheme;
+  const layoutStyle = { height: '100%', backgroundColor: 'transparent' }
+
+  console.log(themeStore.theme)
 
   return (
     <IntlProvider locale="en" messages={messages}>
       <ThemeProvider theme={themeMode}>
         <GlobalStyles />
         <Router>
-          <Switch>
-            <Route exact path="/">
-              <Main />
-            </Route>
-            <PublicRoute path="/login">
-              <SingIn />
-            </PublicRoute>
-            <PublicRoute path="/registration">
-              <SingUp />
-            </PublicRoute>
-            <PublicRoute path="/about">
-              <About />
-            </PublicRoute>
-            <PublicRoute path="/contacts">
-              <Contacts />
-            </PublicRoute>
-            <Route path="/test">
-              <Test />
-            </Route>
-            <ProtectedRoute path="/users/:userId">
-              <Home />
-            </ProtectedRoute>
-          </Switch>
+          <Layout style={layoutStyle}>
+          <Header />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Switch>
+              <Route exact path="/">
+                <Main />
+              </Route>
+              <PublicRoute path="/login">
+                <SingIn />
+              </PublicRoute>
+              <PublicRoute path="/registration">
+                <SingUp />
+              </PublicRoute>
+              <PublicRoute path="/about">
+                <About />
+              </PublicRoute>
+              <PublicRoute path="/contacts">
+                <Contacts />
+              </PublicRoute>
+              <Route path="/test">
+                <Test />
+              </Route>
+              <ProtectedRoute path="/users/:userId">
+                <Home />
+              </ProtectedRoute>
+            </Switch>
+          </Suspense>
+          </Layout>
         </Router>
       </ThemeProvider>
     </IntlProvider>

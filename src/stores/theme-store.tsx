@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx'
+import { decorate, observable, action } from 'mobx'
 import { persist } from 'mobx-persist'
 
 const localTheme = window.localStorage.getItem('theme');
@@ -10,8 +10,6 @@ export enum Theme {
 }
 
 export class ThemeStore {
-  @persist
-  @observable
   theme = localTheme ? localTheme : matcher.matches ? 'dark' : 'light'
 
   constructor() {
@@ -20,9 +18,13 @@ export class ThemeStore {
     });
   }
 
-  @action
   setTheme(newTheme: Theme) {
     window.localStorage.setItem('theme', newTheme)
     this.theme = newTheme
   }
 }
+
+decorate(ThemeStore, {
+  theme: [persist, observable],
+  setTheme: action
+});

@@ -1,5 +1,6 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { observer } from 'mobx-react'
 import { FormattedMessage } from 'react-intl'
 import { Squash as Hamburger } from 'hamburger-react'
 import styled from 'styled-components'
@@ -44,19 +45,20 @@ const UserMenu = ({ themeChange, checked }: UserMenuProps) => (
   </StyledMenu>
 );
 
-const Header = () => {
+const Header = observer(() => {
   const { themeStore, userStore, authStore } = useStores()
-  const { pathname } = useLocation()
 
   const themeChange = (checked: boolean) => {
     themeStore.setTheme(checked ? Theme.dark : Theme.light)
   }
 
+  console.log(userStore.profile)
+
   return (
     <StyledHeader className="header">
       <HeaderWrapper>
         <Logo />
-        <StyledMenu mode="horizontal" defaultSelectedKeys={[pathname]}>
+        <StyledMenu mode="horizontal">
           {
             authStore.token && (
               <StyledMenuItem key="search">
@@ -105,7 +107,7 @@ const Header = () => {
 
           {
             authStore.token && (
-              <StyledMenuItem key="4">
+              <StyledMenuItem key="user">
                 <Dropdown overlay={<UserMenu checked={themeStore.theme === Theme.dark} themeChange={themeChange} />} placement="bottomRight">
                   <Button type="link">
                     {userStore.profile.name} <DownOutlined />
@@ -121,7 +123,7 @@ const Header = () => {
       </HeaderWrapper>
     </StyledHeader>
   )
-}
+})
 
 const MobileMenu = styled.div`
 
