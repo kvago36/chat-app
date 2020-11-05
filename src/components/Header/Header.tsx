@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 import { observer } from 'mobx-react'
 import { FormattedMessage } from 'react-intl'
 import { Squash as Hamburger } from 'hamburger-react'
@@ -11,8 +11,11 @@ import { Theme } from 'stores/theme-store'
 
 import { useStores } from 'hooks/use-stores'
 
+import { StyledButton } from 'components/styled/Button/Button'
 import { StyledHeader } from 'components/styled/Layout/Layout'
 import { StyledMenu, StyledMenuItem } from 'components/styled/Menu/Menu'
+
+import axios from 'axiosConfig'
 
 const { SubMenu } = Menu
 
@@ -25,11 +28,6 @@ interface UserMenuProps {
 
 const UserMenu = ({ themeChange, checked }: UserMenuProps) => (
   <StyledMenu>
-    <StyledMenuItem key="0">
-      <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-        1st menu item
-      </a>
-    </StyledMenuItem>
     <StyledMenuItem key="1">
       <Switch
         onChange={themeChange}
@@ -46,13 +44,18 @@ const UserMenu = ({ themeChange, checked }: UserMenuProps) => (
 );
 
 const Header = observer(() => {
+  const history = useHistory()
   const { themeStore, userStore, authStore } = useStores()
+
+  const logOut = () => {
+    authStore.clearToken()
+    axios.post('/users/logout')
+    history.replace('/login')
+  }
 
   const themeChange = (checked: boolean) => {
     themeStore.setTheme(checked ? Theme.dark : Theme.light)
   }
-
-  console.log(userStore.profile)
 
   return (
     <StyledHeader className="header">
@@ -117,6 +120,13 @@ const Header = observer(() => {
             )
           }
         </StyledMenu>
+
+        {
+          authStore.token && (
+            <StyledButton type="dashed" onClick={logOut}><FormattedMessage id="logout" /></StyledButton>
+          )
+        }
+
         {/* <MobileMenu>
           <Hamburger />
         </MobileMenu> */}

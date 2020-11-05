@@ -2,6 +2,7 @@ import { observable, action } from 'mobx'
 import { persist } from 'mobx-persist'
 
 import { Gender, User } from 'types/User'
+import { Message } from 'types/Message'
 
 class Location {
   @persist @observable type = '';
@@ -23,6 +24,7 @@ export class UserStore {
   @persist @observable login = '';
   @persist @observable email = '';
   @persist @observable password = '';
+  @persist('list') @observable messages: Message[] = [];
 
   @persist('object') @observable location = new Location();
 
@@ -36,6 +38,7 @@ export class UserStore {
     this.password = user.password
     this.location = user.location
     this.profile = user.profile
+    this.messages = user.messages
   }
 
   @action

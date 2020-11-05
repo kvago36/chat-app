@@ -18,6 +18,7 @@ export const messages = {
   signIn: 'Signin',
   signUp: 'Signup',
   login: 'Login',
+  logout: 'Logout',
   contacts: 'Contacts',
   about: 'About us',
   registration: 'Registration',

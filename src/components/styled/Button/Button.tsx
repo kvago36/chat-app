@@ -7,10 +7,9 @@ export const StyledButton = styled(Button)`
   color: ${({ theme, type }) => type === 'primary' ? '#fff' : theme.main};
   font-size: 1em;
   margin: 1em;
-  font-weight: bold;
   padding: 0.25em 1em;
   outline: none;
-  border: ${({ theme, type }) => `2px ${ type === 'dashed' ? 'dashed' : 'solid'} ${theme.main}`};
+  border: ${({ theme, type }) => `1px ${ type === 'dashed' ? 'dashed' : 'solid'} ${theme.main}`};
   border-radius: 3px;
   
   :hover {

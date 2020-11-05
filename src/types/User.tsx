@@ -1,3 +1,5 @@
+import { Message } from './Message'
+
 export enum Gender {
   male = 'male',
   female = 'female'
@@ -14,6 +16,8 @@ export type User = {
     type: string,
     coordinates: [number]
   },
+
+  messages: Message[],
 
   profile: {
     name: string;
